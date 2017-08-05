@@ -1,25 +1,24 @@
 var PRICE = 9.99;
 
 new Vue({
-
     el: '#app',
     data: {
         total: 0,
-        items: [
-            {id: 1, title: 'Item 1'},
-            {id: 2, title: 'Item 2'},
-            {id: 3, title: 'Item 3'},
-            {id: 4, title: 'Item 4'}
-        ],
+        items: [],
         cart: [],
-        search: ''
+        newSearch: 'anime',
+        lastSearch: '',
+        loading: 'false',
+        price: PRICE
     },
     methods: {
         onSubmit: function() {
             this.$http
-                .get('/search/'.concat('90s'))
+                .get('/search/'.concat(this.newSearch))
                 .then(function(res) {
-                    console.log(res);
+                    this.lastSearch = this.newSearch;
+                    this.items = res.data;
+                    this.loading = false;
                 });
         },
         addItem: function (index) {
@@ -63,5 +62,8 @@ new Vue({
         currency: function (price) {
             return '$'.concat(price.toFixed(2));
         }
+    },
+    mounted: function () {
+        this.onSubmit()
     }
 });
